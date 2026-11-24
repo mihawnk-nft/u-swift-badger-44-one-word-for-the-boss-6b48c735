@@ -63,8 +63,13 @@ def main():
     assert word.strip() == word and word.isalpha(), "entry must be one word"
     out_dir = os.environ.get("OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
-    with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
+    out_path = os.path.join(out_dir, "entry.txt")
+    with open(out_path, "w", encoding="utf-8") as f:
         f.write(word)
+    # Read it back: the gate reads the file, not our intent, so prove the
+    # bytes on disk are exactly the word before claiming success.
+    with open(out_path, encoding="utf-8") as f:
+        assert f.read() == word, "entry.txt does not match the picked word"
     print(word)
 
 
